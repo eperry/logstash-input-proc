@@ -83,7 +83,7 @@ def readPidStats(queue)
         begin
           data = IO.read("/proc/#{file}/cmdline").tr("\000", ' ').strip
           process["cmdline"] = data 
-        rescue Exception => ex
+        rescue
           next # Process terminated, on to the next process
         end
 
@@ -113,11 +113,12 @@ def readPidStats(queue)
         process["fd"] = Hash.new
 
         begin
-          Dir["/proc/#{file}/fd/*"].foreach { |fd|
-            process["fd"][File.basename(fd)] = File.readlink(fd) rescue nil
+          Dir.foreach("/proc/#{file}/fd/") { |fd|
+            process["fd"][fd] = File.readlink("/proc/#{file}/fd/"+fd)  rescue nil
           }
-        rescue
-        #  # Ignore and move on
+          rescue 
+          process["fd"] = ""
+          #  # Ignore and move on
         end
 
         # Get /proc/<pid>/root information
