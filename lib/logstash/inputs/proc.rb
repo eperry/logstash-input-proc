@@ -202,7 +202,7 @@ def readPidStats(queue)
         # If cmdline is empty use comm instead
         process["cmdline"] = process["comm"] if process["cmdline.empty?"]
 
-        @logger.info? && @logger.info("output  ")
+        
         event = LogStash::Event.new( "file" => "/proc" ,"host" => @host, "type" => "pidstats" , "process" => process);
         decorate(event)
         queue << event
