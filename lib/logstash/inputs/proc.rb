@@ -216,11 +216,11 @@ end
       begin
       start = Time.now
       @logger.info? && @logger.info("Reading VmStats ")
-      #readVmStats(queue)
+      readVmStats(queue)
       @logger.info? && @logger.info("Reading LoadAverage ")
-      #readLoadAverage(queue)
+      readLoadAverage(queue)
       @logger.info? && @logger.info("Reading MemInfo ")
-      #readMemInfo(queue)
+      readMemInfo(queue)
       @logger.info? && @logger.info("Getting list of PID ")
       readPidStats(queue);
   
