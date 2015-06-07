@@ -28,6 +28,7 @@ class LogStash::Inputs::Proc < LogStash::Inputs::Base
   config :pidstats,   :validate => :hash
   config :diskstats,  :validate => :hash
   config :mounts,     :validate => :hash
+  config :netdev,     :validate => :hash
 
   public
   def register
@@ -300,6 +301,45 @@ def readMounts(queue)
   }
 
 end
+def readNetDev(queue)
+    #  face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+
+		file = Pathname.new("/proc/net/dev")
+    lines = file.readlines
+    junk = lines.shift
+    junk = lines.shift
+    lines.each { |line|
+      #@logger.info? && @logger.info("LINE: "+line)
+      m = line.strip.split(/[:\s]+/)
+      if (m && m.length >= 17 )
+      event = LogStash::Event.new("raw"=>line, 
+              "iface"         => m[0], 
+              "rxbytes"       => m[1],
+              "rxpackets"     => m[2],
+              "rxerrors"      => m[3],
+              "rxdrops"       => m[4],
+              "rxfifo"        => m[5],
+              "rxframe"       => m[6],
+              "rxcompressed"  => m[7],
+              "rxmulticast"   => m[8],
+              "txbytes"       => m[9],
+              "txpackets"     => m[10],
+              "txerrors"      => m[11],
+              "txdrops"       => m[12],
+              "txfifo"        => m[13],
+              "txframe"       => m[14],
+              "txcompressed"  => m[15],
+              "txmulticast"   => m[16],
+              "file"          => file.to_s,
+              "host"          => @host, 
+              "type"          => "vmstats" )
+              decorate(event)
+              queue << event
+      end
+  }
+
+end
+
   def run(queue)
     loop do
       begin
@@ -310,6 +350,7 @@ end
       readPidStats(queue)    if @pidstats
       readDiskStats(queue)   if @diskstats
       readMounts(queue)      if @mounts
+      readNetDev(queue)      if @netdev
       duration = Time.now - start
       @logger.info? && @logger.info("Parsing completed", 
                                      :duration => duration,
