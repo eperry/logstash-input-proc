@@ -32,7 +32,7 @@ bundle install
 
 - Edit Logstash `Gemfile` and add the local plugin path, for example:
 ```ruby
-gem "logstash-output-proc", :path => "/your/local/logstash-output-proc"
+gem "logstash-input-proc", :path => "/your/local/logstash-input-proc"
 ```
 - Install plugin
 ```sh
@@ -58,7 +58,7 @@ gem build logstash-output-proc.gemspec
 ```
 - Install the plugin from the Logstash home
 ```sh
-bin/plugin install /your/local/plugin/logstash-output-proc.gem
+bin/plugin install /your/local/plugin/logstash-input-proc.gem
 ```
 - Start Logstash and proceed to test the plugin
 - 
@@ -83,8 +83,7 @@ output {
     }
 }
 ```
-#example minimal
-
+#Example Minimal
 
 ```ruby
 input {
