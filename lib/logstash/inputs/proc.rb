@@ -287,7 +287,7 @@ def readMounts(queue)
               "device"            => m[0], 
               "mountpoint"        => m[1],
               "fsType"            => m[2],
-              "flags"             => m[3],
+              "flagsRaw"          => m[3],
               "flags"             => m[3].split(/\,/),
               "dummy1"            => m[4],
               "dummy2"            => m[5],
