@@ -3,6 +3,7 @@ require "logstash/inputs/base"
 require "logstash/namespace"
 require "stud/interval"
 require "socket" # for Socket.gethostname
+require 'etc'
 
 # Generate a repeating message.
 #
@@ -21,6 +22,11 @@ class LogStash::Inputs::Proc < LogStash::Inputs::Base
   #
   # The default, `60`, means send a message every 60 second.
   config :interval, :validate => :number, :default => 60
+  config :vmstats, :validate => :hash
+  config :loadavg, :validate => :hash
+  config :meminfo, :validate => :hash
+  config :pidstats, :validate => :hash
+
 
   public
   def register
@@ -73,11 +79,21 @@ def readMemInfo(queue)
 end
 
 def readPidStats(queue)
-  @logger.info? && @logger.info("in ReadPidStats ")
+  @logger.info? && @logger.info("in " + $0)
+  fuid = -1
+  
+  if @pidstats.has_key?("user")
+    fuid = Etc.getpwnam(@pidstats["user"]).uid
+    @logger.info? && @logger.info("Filtering userid =" + @pidstats["user"] )
+  end
   process = Hash.new
   #Loosely based on the GEM ProcTable  which was  based on the Perl Module ProcTable
      Dir.foreach("/proc"){ |file|
         next if file =~ /\D/ # Skip non-numeric directories
+        if fuid >= 0
+          fileUid = File.stat("/proc/"+file).uid
+          next if fileUid != fuid
+        end
         
         # Get /proc/<pid>/cmdline information. Strip out embedded nulls.
         begin
@@ -216,15 +232,10 @@ end
     loop do
       begin
       start = Time.now
-      @logger.info? && @logger.info("Reading VmStats ")
-      readVmStats(queue)
-      @logger.info? && @logger.info("Reading LoadAverage ")
-      readLoadAverage(queue)
-      @logger.info? && @logger.info("Reading MemInfo ")
-      readMemInfo(queue)
-      @logger.info? && @logger.info("Getting list of PID ")
-      readPidStats(queue);
-  
+      readVmStats(queue)     if @pidstats
+      readLoadAverage(queue) if @loadavg
+      readMemInfo(queue)     if @meminfo
+      readPidStats(queue)    if @pidstats
       duration = Time.now - start
       @logger.info? && @logger.info("Parsing completed", 
                                      :duration => duration,
@@ -240,10 +251,11 @@ end
       else
         sleep(sleeptime)
       end
-       rescue => exception
-      puts exception.backtrace
-      raise exception # always reraise
-    end
+      rescue => exception
+        #puts exception.message 
+        #puts exception.backtrace
+        raise
+      end # rescue
     end # loop
    
   end # def run

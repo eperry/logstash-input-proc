@@ -4,8 +4,9 @@ This is a plugin for [Logstash](https://github.com/elasticsearch/logstash).
 
 This plugin is to read the /proc virtual file system , decode the files in it.
 I am using the following pages for reference 
--http://man7.org/linux/man-pages/man5/proc.5.html
--
+
+- http://man7.org/linux/man-pages/man5/proc.5.html
+
 
 
 
@@ -61,13 +62,38 @@ bin/plugin install /your/local/plugin/logstash-output-proc.gem
 ```
 - Start Logstash and proceed to test the plugin
 - 
-# Example Config
+# Example Config all features enabled
 ```ruby
 input {
     proc {
         interval=>60
+        vmstats =>{ }
+        loadavg =>{ }
+        meminfo =>{ }
+        pidstats =>{ 
+            user => "root"
+        }
+        
     }
-}  
+}
+
+output { 
+    stdout{ 
+        codec=>"rubydebug"
+    }
+}
+```
+#example minimal
+
+
+```ruby
+input {
+    proc {
+        interval=>60
+        meminfo =>{ }
+    }
+}
+
 output { 
     stdout{ 
         codec=>"rubydebug"
