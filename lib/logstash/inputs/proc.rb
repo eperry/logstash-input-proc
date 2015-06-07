@@ -265,7 +265,7 @@ def readDiskStats(queue)
               "ioWeightedTimeSpentMS" => m[14],
               "file"              => file.to_s,
               "host"              => @host, 
-              "type"              => "vmstats" )
+              "type"              => "diskstats" )
               decorate(event)
               queue << event
       end
@@ -294,7 +294,7 @@ def readMounts(queue)
               "dummy2"            => m[5],
               "file"              => file.to_s,
               "host"              => @host, 
-              "type"              => "vmstats" )
+              "type"              => "mounts" )
               decorate(event)
               queue << event
       end
@@ -332,7 +332,7 @@ def readNetDev(queue)
               "txmulticast"   => m[16],
               "file"          => file.to_s,
               "host"          => @host, 
-              "type"          => "vmstats" )
+              "type"          => "netdev" )
               decorate(event)
               queue << event
       end
