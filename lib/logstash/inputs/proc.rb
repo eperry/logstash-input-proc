@@ -21,12 +21,12 @@ class LogStash::Inputs::Proc < LogStash::Inputs::Base
   # Set how frequently messages should be sent.
   #
   # The default, `60`, means send a message every 60 second.
-  config :interval, :validate => :number, :default => 60
-  config :vmstats, :validate => :hash
-  config :loadavg, :validate => :hash
-  config :meminfo, :validate => :hash
-  config :pidstats, :validate => :hash
-
+  config :interval,   :validate => :number, :default => 60
+  config :vmstats,    :validate => :hash
+  config :loadavg,    :validate => :hash
+  config :meminfo,    :validate => :hash
+  config :pidstats,   :validate => :hash
+  config :diskstats,  :validate => :hash
 
   public
   def register
@@ -73,8 +73,6 @@ def readMemInfo(queue)
       #else
       #       puts("#"+m.to_s)
       end
-    
-    
   }
 end
 
@@ -227,7 +225,51 @@ def readPidStats(queue)
 
 
 end
+def readDiskStats(queue)
+  	# 1 - major number
+		# 2 - minor mumber
+		# 3 - device name
+		# 4 - reads completed successfully
+		# 5 - reads merged
+		# 6 - sectors read
+		# 7 - time spent reading (ms)
+		# 8 - writes completed
+		# 9 - writes merged
+		#10 - sectors written
+		#11 - time spent writing (ms)
+		#12 - I/Os currently in progress
+		#13 - time spent doing I/Os (ms)
+		#14 - weighted time spent doing I/Os (ms)
+		file = Pathname.new("/proc/diskstats")
+    lines = file.readlines
+    lines.each { |line|
+      #@logger.info? && @logger.info("LINE: "+line)
+      m = line.split(/\s+/)
+      if (m && m.length >= 13 )
+      event = LogStash::Event.new("raw"=>line, 
+              "major"             => m[1], 
+              "minor"             => m[2],
+              "dev"               => m[3],
+              "readsCompleted"    => m[4],
+              "readsMerged"       => m[5],
+              "sectorsRead"       => m[6],
+              "readsTimeSpentMS"  => m[7],
+              "writesCompleted"   => m[8],
+              "writesMerged"      => m[9],
+              "sectorsWritten"    => m[10],
+              "writesTimeSpentMS" => m[11],
+              "iosInProgress"     => m[12],
+              "ioTimeSpentMS"     => m[13],
+              "ioWeightedTimeSpentMS" => m[14],
+              "file"              => file.to_s,
+              "host"              => @host, 
+              "type"              => "vmstats" )
+              decorate(event)
+              queue << event
+      end
+  }
 
+end
   def run(queue)
     loop do
       begin
@@ -236,6 +278,7 @@ end
       readLoadAverage(queue) if @loadavg
       readMemInfo(queue)     if @meminfo
       readPidStats(queue)    if @pidstats
+      readDiskStats(queue)   if @diskstats
       duration = Time.now - start
       @logger.info? && @logger.info("Parsing completed", 
                                      :duration => duration,
