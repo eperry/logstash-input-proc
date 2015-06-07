@@ -33,7 +33,8 @@ class LogStash::Inputs::Proc < LogStash::Inputs::Base
   public
   def register
     @host = Socket.gethostname
-      @logger.info("Registering Proc Input", :type => @type, :interval => @interval)
+    @logger.info("Registering Proc Input", :type => @type, :interval => @interval)
+    
   end # def register
 
 def readVmStats(queue)
@@ -352,7 +353,7 @@ end
       readMounts(queue)      if @mounts
       readNetDev(queue)      if @netdev
       duration = Time.now - start
-      @logger.info? && @logger.info("Parsing completed", 
+      @logger.info("Parsing completed", 
                                      :duration => duration,
                                      :interval => @interval )
 
