@@ -27,6 +27,7 @@ class LogStash::Inputs::Proc < LogStash::Inputs::Base
   config :meminfo,    :validate => :hash
   config :pidstats,   :validate => :hash
   config :diskstats,  :validate => :hash
+  config :mounts,     :validate => :hash
 
   public
   def register
@@ -270,6 +271,35 @@ def readDiskStats(queue)
   }
 
 end
+def readMounts(queue)
+    #The 1st column specifies the device that is mounted.
+    #The 2nd column reveals the mount point.
+    #The 3rd column tells the file-system type.
+    #The 4th column tells you if it is mounted read-only (ro) or read-write (rw).
+    #The 5th and 6th columns are dummy values
+		file = Pathname.new("/proc/mounts")
+    lines = file.readlines
+    lines.each { |line|
+      #@logger.info? && @logger.info("LINE: "+line)
+      m = line.split(/\s+/)
+      if (m && m.length >= 6 )
+      event = LogStash::Event.new("raw"=>line, 
+              "device"            => m[0], 
+              "mountpoint"        => m[1],
+              "fsType"            => m[2],
+              "flags"             => m[3],
+              "flags"             => m[3].split(/\,/),
+              "dummy1"            => m[4],
+              "dummy2"            => m[5],
+              "file"              => file.to_s,
+              "host"              => @host, 
+              "type"              => "vmstats" )
+              decorate(event)
+              queue << event
+      end
+  }
+
+end
   def run(queue)
     loop do
       begin
@@ -279,6 +309,7 @@ end
       readMemInfo(queue)     if @meminfo
       readPidStats(queue)    if @pidstats
       readDiskStats(queue)   if @diskstats
+      readMounts(queue)      if @mounts
       duration = Time.now - start
       @logger.info? && @logger.info("Parsing completed", 
                                      :duration => duration,
