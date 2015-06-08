@@ -29,6 +29,7 @@ class LogStash::Inputs::Proc < LogStash::Inputs::Base
   config :diskstats,  :validate => :hash
   config :mounts,     :validate => :hash
   config :netdev,     :validate => :hash
+  config :cpuinfo,    :validate => :hash
 
   public
   def register
@@ -340,7 +341,34 @@ def readNetDev(queue)
   }
 
 end
-
+def readCpuInfo(queue)
+    #  face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+    cpuinfo = Hash.new
+		file = Pathname.new("/proc/cpuinfo")
+    lines = file.readlines
+    lines.each { |line|
+      #@logger.info? && @logger.info("LINE: "+line)
+      puts(line.length)
+      if ( line.length == 1 )
+        event = LogStash::Event.new( 
+              "cpuinfo"       => cpuinfo,
+              "file"          => file.to_s,
+              "host"          => @host, 
+              "type"          => "cpuinfo" )
+        decorate(event)
+        queue << event
+        next
+      end
+      m = line.strip.split(/\s+:\s+/)
+      if ( m && m.length >= 2 )
+        if ( "flags" == m[0] )
+          cpuinfo[m[0]] = m[1].strip.split(/\s+/)
+          next
+        end
+        cpuinfo[m[0]] = m[1]
+      end
+    }
+end
   def run(queue)
     loop do
       begin
@@ -352,11 +380,10 @@ end
       readDiskStats(queue)   if @diskstats
       readMounts(queue)      if @mounts
       readNetDev(queue)      if @netdev
+      readCpuInfo(queue)     if @cpuinfo
+      
       duration = Time.now - start
-      @logger.info("Parsing completed", 
-                                     :duration => duration,
-                                     :interval => @interval )
-
+      @logger.info("Parsing completed", :duration => duration, :interval => @interval )
       # Sleep for the remainder of the interval, or 0 if the duration ran
       # longer than the interval.
       sleeptime = [0, @interval - duration].max
@@ -373,7 +400,5 @@ end
         raise
       end # rescue
     end # loop
-   
   end # def run
-
 end # class LogStash::Inputs::Example
