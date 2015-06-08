@@ -393,6 +393,42 @@ def readCrypto(queue)
     }
 end
 
+def readNetDev(queue)
+    #  face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+
+		file = Pathname.new("/proc/net/wireless")
+    #Inter-| sta-|   Quality        |   Discarded packets               | Missed | WE
+    #face | tus | link level noise |  nwid  crypt   frag  retry   misc | beacon | 22
+    lines = file.readlines
+    junk = lines.shift
+    junk = lines.shift
+    lines.each { |line|
+      #@logger.info? && @logger.info("LINE: "+line)
+      m = line.strip.split(/[:\s]+/)
+      if (m && m.length >= 17 )
+      event = LogStash::Event.new("raw"=>line, 
+              "iface"         => m[0], 
+              "status"        => m[1],
+              "linkQuality"   => m[2],
+              "levelQuality"  => m[3],
+              "noiseQulity"   => m[4],
+              "nwidDiscard"   => m[5],
+              "cryptDiscard"  => m[6],
+              "fragDiscard"   => m[7],
+              "retryDiscard"  => m[8],
+              "miscDiscard"   => m[9],
+              "missedBeacon"  => m[10],
+              "we22"          => m[11],
+              "file"          => file.to_s,
+              "host"          => @host, 
+              "type"          => "netdev" )
+              decorate(event)
+              queue << event
+      end
+  }
+
+end
+
   def run(queue)
     loop do
       begin
