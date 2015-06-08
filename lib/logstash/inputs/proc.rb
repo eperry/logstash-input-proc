@@ -30,6 +30,7 @@ class LogStash::Inputs::Proc < LogStash::Inputs::Base
   config :mounts,     :validate => :hash
   config :netdev,     :validate => :hash
   config :cpuinfo,    :validate => :hash
+  config :crypto,    :validate => :hash
 
   public
   def register
@@ -348,7 +349,6 @@ def readCpuInfo(queue)
     lines = file.readlines
     lines.each { |line|
       #@logger.info? && @logger.info("LINE: "+line)
-      puts(line.length)
       if ( line.length == 1 )
         event = LogStash::Event.new( 
               "cpuinfo"       => cpuinfo,
@@ -369,6 +369,30 @@ def readCpuInfo(queue)
       end
     }
 end
+def readCrypto(queue)
+    #  face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+    crypto = Hash.new
+		file = Pathname.new("/proc/crypto")
+    lines = file.readlines
+    lines.each { |line|
+      #@logger.info? && @logger.info("LINE: "+line)
+      if ( line.length == 1 )
+        event = LogStash::Event.new( 
+              "crypto"       => crypto,
+              "file"          => file.to_s,
+              "host"          => @host, 
+              "type"          => "cpuinfo" )
+        decorate(event)
+        queue << event
+        next
+      end
+      m = line.strip.split(/\s+:\s+/)
+      if ( m && m.length >= 2 )
+        crypto[m[0]] = m[1]
+      end
+    }
+end
+
   def run(queue)
     loop do
       begin
@@ -381,6 +405,7 @@ end
       readMounts(queue)      if @mounts
       readNetDev(queue)      if @netdev
       readCpuInfo(queue)     if @cpuinfo
+      readCrypto(queue)      if @crypto
       
       duration = Time.now - start
       @logger.info("Parsing completed", :duration => duration, :interval => @interval )
