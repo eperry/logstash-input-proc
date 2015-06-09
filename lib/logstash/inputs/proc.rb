@@ -30,8 +30,10 @@ class LogStash::Inputs::Proc < LogStash::Inputs::Base
   config :mounts,     :validate => :hash
   config :netdev,     :validate => :hash
   config :cpuinfo,    :validate => :hash
-  config :crypto,    :validate => :hash
-
+  config :crypto,     :validate => :hash
+  config :wireless,   :validate => :hash
+  config :sysipcshm,  :validate => :hash
+  
   public
   def register
     @host = Socket.gethostname
@@ -386,27 +388,29 @@ def readCrypto(queue)
         queue << event
         next
       end
-      m = line.strip.split(/\s+:\s+/)
+      m = line.strip.split(/[:\s]+/)
       if ( m && m.length >= 2 )
         crypto[m[0]] = m[1]
       end
     }
 end
 
-def readNetDev(queue)
+def readWireless(queue)
     #  face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
-
 		file = Pathname.new("/proc/net/wireless")
     #Inter-| sta-|   Quality        |   Discarded packets               | Missed | WE
     #face | tus | link level noise |  nwid  crypt   frag  retry   misc | beacon | 22
+    #  wlan0: 0000   32.  -78.  -256        0      0      0     19     89        0
     lines = file.readlines
     junk = lines.shift
     junk = lines.shift
     lines.each { |line|
       #@logger.info? && @logger.info("LINE: "+line)
       m = line.strip.split(/[:\s]+/)
-      if (m && m.length >= 17 )
-      event = LogStash::Event.new("raw"=>line, 
+      #puts(m)
+      if (m && m.length >= 11 )
+      event = LogStash::Event.new(
+              "raw"           => line, 
               "iface"         => m[0], 
               "status"        => m[1],
               "linkQuality"   => m[2],
@@ -421,7 +425,44 @@ def readNetDev(queue)
               "we22"          => m[11],
               "file"          => file.to_s,
               "host"          => @host, 
-              "type"          => "netdev" )
+              "type"          => "wireless" )
+              decorate(event)
+              queue << event
+      end
+  }
+
+end
+def readSysIpcShm(queue)
+    #  face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+		file = Pathname.new("/proc/sysvipc/shm")
+    #   key      shmid perms                  size  cpid  lpid nattch   uid   gid  cuid  cgid      atime      dtime      ctime                   rss                  swap
+    #     0     589824  1600                524288  1708  1739      2  1000  1000  1000  1000 1433801660 1433801660 1433801659                 12288                     0
+    #     0     491521  1600                524288  1479   871      2  1000  1000  1000  1000 1433801655          0 1433801655                147456                     0
+    lines = file.readlines
+    junk = lines.shift
+    lines.each { |line|
+      m = line.strip.split(/[\s]+/)
+      if (m && m.length >= 14 )
+      event = LogStash::Event.new(
+              "raw"   => line, 
+              "key"   => m[0], 
+              "shmid" => m[1],
+              "perms" => m[2],
+              "size"  => m[3],
+              "cpid"  => m[4],
+              "lpid"  => m[5],
+              "nattch"=> m[6],
+              "uid"   => m[7],
+              "gid"   => m[8],
+              "cuid"  => m[9],
+              "cgid"  => m[10],
+              "atime" => m[11],
+              "dtime" => m[12],
+              "ctime" => m[13],
+              "rss"   => m[14],
+              "file"  => file.to_s,
+              "host"  => @host, 
+              "type"  => "sysvipcshm" )
               decorate(event)
               queue << event
       end
@@ -442,7 +483,8 @@ end
       readNetDev(queue)      if @netdev
       readCpuInfo(queue)     if @cpuinfo
       readCrypto(queue)      if @crypto
-      
+      readWireless(queue)    if @wireless
+      readSysIpcShm(queue)   if @sysipcshm
       duration = Time.now - start
       @logger.info("Parsing completed", :duration => duration, :interval => @interval )
       # Sleep for the remainder of the interval, or 0 if the duration ran
