@@ -44,43 +44,58 @@ class LogStash::Inputs::Proc < LogStash::Inputs::Base
 def readVmStats(queue)
   file = Pathname.new("/proc/vmstat")
   lines = file.readlines
+  vmstats = {}
   lines.each { |line|
       #@logger.info? && @logger.info("LINE: "+line)
       m = /(\w+)\s+([\.\d]+)/.match(line)
       if (m && m.length >= 3 )
-      event = LogStash::Event.new("raw"=>line, m[1] => m[2], "file" => file.to_s,"host" => @host, "type" => "vmstats" )
-              decorate(event)
-              queue << event
+        vmstats[m[1]]=m[2].to_i
       end
   }
+  event = LogStash::Event.new( 'vmstats'=> vmstats, "file" => file.to_s,"host" => @host, "type" => "vmstats" )
+  decorate(event)
+  queue << event
+
 end
 
 def readLoadAverage(queue)
   file = Pathname.new("/proc/loadavg")
   lines = file.readlines
+  loadavg = {}
   lines.each { |line|
       m = /([\d\.]+)\s+([\d\.]+)\s+([\d\.])+\s+(\d+)\/(\d+)\s+(\d+)/.match(line)
       if (m && m.length >=6 )
-      event = LogStash::Event.new("raw"=>  m[0],"1minute" => m[1], "5minute" => m[2], "15minute" => m[3],  "runnable" => m[4], "existing" => m[5],"lastcreatedpid" => m[6], "file" => file.to_s,"host" => @host, "type" => "loadavg" )
-              decorate(event)
-              queue << event
+        loadavg["1minute"] =  m[1].to_i
+        loadavg["10minute"] = m[2].to_i
+        loadavg["15minute"] = m[3].to_i
+        loadavg["runnable"] = m[4].to_i
+        loadavg["existing"] = m[5].to_i
+        loadavg["lastcreatedpid"] = m[6].to_i
+        event = LogStash::Event.new( "loadavg" => loadavg,   "file" => file.to_s,"host" => @host, "type" => "loadavg" )
+        decorate(event)
+        queue << event
       end
+      
   }
 end
+
 def readMemInfo(queue)
   file = Pathname.new("/proc/meminfo")
   lines = file.readlines
-
+  meminfo={}
   lines.each { |line|
       m = /(\w+):\s+(\d+)/.match(line)
       if (m && m.length >=3 )
-      event = LogStash::Event.new("raw"=>  m[0], m[1] => m[2], "file" => file.to_s,"host" => @host, "type" => "meminfo" )
-              decorate(event)
-              queue << event
+        meminfo[m[1]] = m[2].to_i
       #else
       #       puts("#"+m.to_s)
       end
   }
+  meminfo["CalcMemUsed"]=meminfo["MemTotal"]-meminfo["MemFree"]
+  event = LogStash::Event.new("meminfo"=>meminfo, "file" => file.to_s,"host" => @host, "type" => "meminfo" )
+              decorate(event)
+              queue << event
+      
 end
 
 def readPidStats(queue)
@@ -474,7 +489,7 @@ end
     loop do
       begin
       start = Time.now
-      readVmStats(queue)     if @pidstats
+      readVmStats(queue)     if @vmstats
       readLoadAverage(queue) if @loadavg
       readMemInfo(queue)     if @meminfo
       readPidStats(queue)    if @pidstats
