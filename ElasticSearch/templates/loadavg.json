@@ -1,0 +1,55 @@
+{
+    "template": "loadavg*",
+    "order": 10,
+    "aliases": {
+        "meminfo": [{
+            "add": {
+                "index": "loadavg"
+            }
+        }]
+    },
+    "mappings": {
+        "loadavg": {
+            "properties": {
+                "@timestamp": {
+                    "format": "dateOptionalTime",
+                    "type": "date"
+                },
+                "host": {
+                    "type": "string"
+                },
+                "file": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "@version": {
+                    "type": "long"
+                },
+                "loadavg": {
+                    "properties": {
+                        "runnable": {
+                            "type": "long"
+                        },
+                        "15minute": {
+                            "type": "long"
+                        },
+                        "lastcreatedpid": {
+                            "type": "long"
+                        },
+                        "existing": {
+                            "type": "long"
+                        },
+                        "1minute": {
+                            "type": "long"
+                        },
+                        "10minute": {
+                            "type": "long"
+                        }
+                    }
+                }
+            }
+        }
+    },
+}
