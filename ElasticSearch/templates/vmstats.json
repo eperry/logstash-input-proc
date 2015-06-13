@@ -2,7 +2,7 @@
     "template": "vmstats*",
     "order": 10,
     "aliases": {
-        "meminfo": [{
+        "vmstats": [{
             "add": {
                 "index": "vmstats"
             }

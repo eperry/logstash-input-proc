@@ -477,7 +477,7 @@ def readSysIpcShm(queue)
               "rss"   => m[14].to_i,
               "file"  => file.to_s,
               "host"  => @host, 
-              "type"  => "sysvipcshm" )
+              "type"  => "sysipcshm" )
               decorate(event)
               queue << event
       end

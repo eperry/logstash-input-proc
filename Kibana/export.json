@@ -15,6 +15,21 @@
     }
   },
   {
+    "_id": "NetDev-Dashboard",
+    "_type": "dashboard",
+    "_source": {
+      "title": "NetDev - Dashboard",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"id\":\"NETDEV-Performance-LineGraph\",\"type\":\"visualization\",\"size_x\":12,\"size_y\":8,\"col\":1,\"row\":1}]",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}]}"
+      }
+    }
+  },
+  {
     "_id": "Memory-Info-Search",
     "_type": "search",
     "_source": {
@@ -54,6 +69,112 @@
       "version": 1,
       "kibanaSavedObjectMeta": {
         "searchSourceJSON": "{\"index\":\"[loadavg-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "WIRELESS-Search",
+    "_type": "search",
+    "_source": {
+      "title": "WIRELESS - Search",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "iface",
+        "linkQuality",
+        "levelQuality",
+        "noiseQulity",
+        "miscDiscard",
+        "missedBeacon"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[wireless-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "NETDEV-Search",
+    "_type": "search",
+    "_source": {
+      "title": "NETDEV - Search",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "iface",
+        "rxbytes",
+        "txbytes",
+        "rxdrops",
+        "rxerrors",
+        "txdrops",
+        "txerrors"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[netdev-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "PIDSTATS-Search",
+    "_type": "search",
+    "_source": {
+      "title": "PIDSTATS - Search",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "process.cmdline",
+        "process.pid",
+        "process.processor",
+        "process.rss",
+        "process.ppid",
+        "process.state",
+        "process.vsize",
+        "process.uid"
+      ],
+      "sort": [
+        "process.ppid",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[pidstats-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[{\"meta\":{\"negate\":true,\"index\":\"[pidstats-]YYYY.MM.DD\",\"key\":\"process.cmdline\",\"value\":\"\",\"disabled\":false},\"query\":{\"match\":{\"process.cmdline\":{\"query\":\"\",\"type\":\"phrase\"}}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "MemInfo-Memory-Use-Overtime",
+    "_type": "visualization",
+    "_source": {
+      "title": "MemInfo - Memory Use Overtime",
+      "visState": "{\"type\":\"area\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"interpolate\":\"linear\",\"mode\":\"stacked\",\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"smoothLines\":true,\"times\":[],\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"meminfo.Buffers\"}},{\"id\":\"2\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"meminfo.Cached\"}},{\"id\":\"5\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"m\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}},{\"id\":\"6\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"meminfo.CalcMemUsed\"}}],\"listeners\":{}}",
+      "description": "",
+      "savedSearchId": "Memory-Info-Search",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "NETDEV-Performance-LineGraph",
+    "_type": "visualization",
+    "_source": {
+      "title": "NETDEV - Performance LineGraph",
+      "visState": "{\"aggs\":[{\"id\":\"1\",\"params\":{\"field\":\"rxbytes\"},\"schema\":\"metric\",\"type\":\"max\"},{\"id\":\"2\",\"params\":{\"field\":\"txbytes\"},\"schema\":\"metric\",\"type\":\"max\"},{\"id\":\"3\",\"params\":{\"customInterval\":\"2h\",\"extended_bounds\":{},\"field\":\"@timestamp\",\"interval\":\"auto\",\"min_doc_count\":1},\"schema\":\"segment\",\"type\":\"date_histogram\"},{\"id\":\"5\",\"params\":{\"field\":\"iface\",\"order\":\"desc\",\"orderBy\":\"1\",\"row\":true,\"size\":0},\"schema\":\"split\",\"type\":\"terms\"},{\"id\":\"6\",\"params\":{\"field\":\"iface\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":0},\"schema\":\"group\",\"type\":\"terms\"}],\"listeners\":{},\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"drawLinesBetweenPoints\":true,\"interpolate\":\"linear\",\"radiusRatio\":9,\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"showCircles\":true,\"smoothLines\":false,\"times\":[],\"yAxis\":{}},\"type\":\"line\"}",
+      "description": "",
+      "savedSearchId": "NETDEV-Search",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
       }
     }
   }

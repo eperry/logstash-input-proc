@@ -2,7 +2,7 @@
     "template": "loadavg*",
     "order": 10,
     "aliases": {
-        "meminfo": [{
+        "loadavg": [{
             "add": {
                 "index": "loadavg"
             }
