@@ -1,3 +1,5 @@
+![](https://github.com/eperry/logstash-input-proc/wiki/MemInfoDashboard.png)
+
 # Logstash Plugin
 
 This is a plugin for [Logstash](https://github.com/elasticsearch/logstash).
