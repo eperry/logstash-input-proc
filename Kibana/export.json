@@ -1,0 +1,60 @@
+[
+  {
+    "_id": "Memory-Info-Dashboard",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Memory Info Dashboard",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"MemInfo-Memory-Use-Overtime\",\"row\":1,\"size_x\":12,\"size_y\":8,\"type\":\"visualization\"}]",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "Memory-Info-Search",
+    "_type": "search",
+    "_source": {
+      "title": "Memory Info Search",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "Buffers",
+        "Cached"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[meminfo-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "LoadAverage",
+    "_type": "search",
+    "_source": {
+      "title": "LoadAverage",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "1minute",
+        "5minute",
+        "15minute"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[loadavg-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[]}"
+      }
+    }
+  }
+]
