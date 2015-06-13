@@ -1,4 +1,4 @@
-![](wiki/MemInfoDashboard.png)
+![](https://github.com/eperry/logstash-input-proc/wiki/MemInfoDashboard.png)
 
 # Logstash Plugin
 
