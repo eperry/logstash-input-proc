@@ -30,6 +30,21 @@
     }
   },
   {
+    "_id": "DiskStats-Dashboard",
+    "_type": "dashboard",
+    "_source": {
+      "title": "DiskStats - Dashboard",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"id\":\"DISKStats-SDA-Partitions-Average-Read-Time-Spent\",\"type\":\"visualization\",\"size_x\":6,\"size_y\":2,\"col\":1,\"row\":1},{\"id\":\"DISKStats-SDA-Partitions-Average-Writes-Time-Spent\",\"type\":\"visualization\",\"size_x\":6,\"size_y\":2,\"col\":1,\"row\":3},{\"id\":\"DISKSTATS-SDA-ReadsTimeSpent-Standard-Devation\",\"type\":\"visualization\",\"size_x\":6,\"size_y\":2,\"col\":7,\"row\":1},{\"id\":\"DISKSTATS-SDA-WritesTimeSpent-Standard-Devation\",\"type\":\"visualization\",\"size_x\":6,\"size_y\":2,\"col\":7,\"row\":3},{\"id\":\"DISKStats-Summary-of-performance\",\"type\":\"visualization\",\"size_x\":12,\"size_y\":3,\"col\":1,\"row\":5}]",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}]}"
+      }
+    }
+  },
+  {
     "_id": "Memory-Info-Search",
     "_type": "search",
     "_source": {
@@ -151,6 +166,132 @@
     }
   },
   {
+    "_id": "DISKSTATS-Search-Filter-Timespent",
+    "_type": "search",
+    "_source": {
+      "title": "DISKSTATS - Search Filter Timespent",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "dev",
+        "ioTimeSpentMS",
+        "readsCompleted",
+        "writesCompleted",
+        "readsTimeSpentMS",
+        "writesTimeSpentMS"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[diskstats-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[{\"meta\":{\"negate\":true,\"index\":\"[diskstats-]YYYY.MM.DD\",\"key\":\"ioTimeSpentMS\",\"value\":\"0\",\"disabled\":false},\"query\":{\"match\":{\"ioTimeSpentMS\":{\"query\":0,\"type\":\"phrase\"}}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "DISKSTATS-Search-Filter-SDA",
+    "_type": "search",
+    "_source": {
+      "title": "DISKSTATS - Search Filter SDA",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "dev",
+        "ioTimeSpentMS",
+        "readsCompleted",
+        "writesCompleted",
+        "readsTimeSpentMS",
+        "writesTimeSpentMS"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[diskstats-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[{\"meta\":{\"negate\":false,\"index\":\"[diskstats-]YYYY.MM.DD\",\"key\":\"dev\",\"value\":\"sda\",\"disabled\":false},\"query\":{\"match\":{\"dev\":{\"query\":\"sda\",\"type\":\"phrase\"}}}}]}"
+      }
+    }
+  },
+  {
+    "_id": "DISKSTATS-Search-All",
+    "_type": "search",
+    "_source": {
+      "title": "DISKSTATS - Search All",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "dev",
+        "ioTimeSpentMS",
+        "readsCompleted",
+        "writesCompleted",
+        "readsTimeSpentMS",
+        "writesTimeSpentMS"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[diskstats-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "NETDEV-All",
+    "_type": "search",
+    "_source": {
+      "title": "NETDEV - All",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "iface",
+        "rxbytes",
+        "txbytes",
+        "rxdrops",
+        "txdrops",
+        "rxerrors",
+        "txerrors"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[netdev-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "DISKSTATS-Search-SDA-Partitions",
+    "_type": "search",
+    "_source": {
+      "title": "DISKSTATS - Search SDA Partitions",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "dev",
+        "ioTimeSpentMS",
+        "readsCompleted",
+        "writesCompleted",
+        "readsTimeSpentMS",
+        "writesTimeSpentMS"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[diskstats-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"query\":\"dev:sda*\",\"analyze_wildcard\":true}},\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[]}"
+      }
+    }
+  },
+  {
     "_id": "MemInfo-Memory-Use-Overtime",
     "_type": "visualization",
     "_source": {
@@ -172,6 +313,76 @@
       "visState": "{\"aggs\":[{\"id\":\"1\",\"params\":{\"field\":\"rxbytes\"},\"schema\":\"metric\",\"type\":\"max\"},{\"id\":\"2\",\"params\":{\"field\":\"txbytes\"},\"schema\":\"metric\",\"type\":\"max\"},{\"id\":\"3\",\"params\":{\"customInterval\":\"2h\",\"extended_bounds\":{},\"field\":\"@timestamp\",\"interval\":\"auto\",\"min_doc_count\":1},\"schema\":\"segment\",\"type\":\"date_histogram\"},{\"id\":\"5\",\"params\":{\"field\":\"iface\",\"order\":\"desc\",\"orderBy\":\"1\",\"row\":true,\"size\":0},\"schema\":\"split\",\"type\":\"terms\"},{\"id\":\"6\",\"params\":{\"field\":\"iface\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":0},\"schema\":\"group\",\"type\":\"terms\"}],\"listeners\":{},\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"drawLinesBetweenPoints\":true,\"interpolate\":\"linear\",\"radiusRatio\":9,\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"showCircles\":true,\"smoothLines\":false,\"times\":[],\"yAxis\":{}},\"type\":\"line\"}",
       "description": "",
       "savedSearchId": "NETDEV-Search",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "DISKStats-Summary-of-performance",
+    "_type": "visualization",
+    "_source": {
+      "title": "DISKStats - Summary of performance",
+      "visState": "{\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"readsCompleted\"}},{\"id\":\"2\",\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"writesCompleted\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"dev\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}},{\"id\":\"4\",\"type\":\"std_dev\",\"schema\":\"metric\",\"params\":{\"field\":\"ioTimeSpentMS\"}}],\"listeners\":{}}",
+      "description": "",
+      "savedSearchId": "DISKSTATS-Search-All",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "DISKSTATS-SDA-ReadsTimeSpent-Standard-Devation",
+    "_type": "visualization",
+    "_source": {
+      "title": "DISKSTATS - SDA ReadsTimeSpent Standard Devation",
+      "visState": "{\"type\":\"line\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"showCircles\":true,\"smoothLines\":false,\"interpolate\":\"linear\",\"scale\":\"linear\",\"drawLinesBetweenPoints\":true,\"radiusRatio\":9,\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"std_dev\",\"schema\":\"metric\",\"params\":{\"field\":\"readsTimeSpentMS\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}}],\"listeners\":{}}",
+      "description": "",
+      "savedSearchId": "DISKSTATS-Search-Filter-SDA",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "DISKSTATS-SDA-WritesTimeSpent-Standard-Devation",
+    "_type": "visualization",
+    "_source": {
+      "title": "DISKSTATS - SDA WritesTimeSpent Standard Devation",
+      "visState": "{\"type\":\"line\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"showCircles\":true,\"smoothLines\":false,\"interpolate\":\"linear\",\"scale\":\"linear\",\"drawLinesBetweenPoints\":true,\"radiusRatio\":9,\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"std_dev\",\"schema\":\"metric\",\"params\":{\"field\":\"writesTimeSpentMS\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}}],\"listeners\":{}}",
+      "description": "",
+      "savedSearchId": "DISKSTATS-Search-Filter-SDA",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "DISKStats-SDA-Partitions-Average-Read-Time-Spent",
+    "_type": "visualization",
+    "_source": {
+      "title": "DISKStats - SDA Partitions Average Read Time Spent",
+      "visState": "{\"type\":\"line\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"showCircles\":true,\"smoothLines\":false,\"interpolate\":\"linear\",\"scale\":\"linear\",\"drawLinesBetweenPoints\":true,\"radiusRatio\":9,\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"readsTimeSpentMS\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"dev\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "description": "",
+      "savedSearchId": "DISKSTATS-Search-SDA-Partitions",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "DISKStats-SDA-Partitions-Average-Writes-Time-Spent",
+    "_type": "visualization",
+    "_source": {
+      "title": "DISKStats - SDA Partitions Average Writes Time Spent",
+      "visState": "{\"type\":\"line\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"showCircles\":true,\"smoothLines\":false,\"interpolate\":\"linear\",\"scale\":\"linear\",\"drawLinesBetweenPoints\":true,\"radiusRatio\":9,\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"writesTimeSpentMS\"}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"dev\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "description": "",
+      "savedSearchId": "DISKSTATS-Search-SDA-Partitions",
       "version": 1,
       "kibanaSavedObjectMeta": {
         "searchSourceJSON": "{\"filter\":[]}"
