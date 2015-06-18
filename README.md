@@ -101,3 +101,30 @@ output {
     }
 }
 ```
+
+## 3.0 Kibana Dashboards
+
+Still a work in progress but I have saved a copy of the Kibana 4.1 dashboards I have created
+in the ~/Kibana Directory, you should be able to import them from the Kibana->settings->Objects pages
+
+These dashboards are right now a way of me validating the data loaded in elasticsearch is usable and provide an example for others to work off of. They work with the setup
+of elasticsearch as defined below.
+
+
+## 4.0 Elasticsearch Templates
+
+In the ~/ElasitcSearch Directory are all the Elasticsearch templates I am developing to work with this plugin. 
+While they may not be exactly what you need they are a good start. 
+
+I load them via the ${ES_HOME/config/templates directory but feel free to load them in your preffered way 
+
+These templates are based on the fact that your indexes for the data are created like so:
+```
+output { 
+    elasticsearch { 
+       host => localhost 
+       index => "%{type}-%{+YYYY.MM.dd}"
+    }
+}
+```
+
