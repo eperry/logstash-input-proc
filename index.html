@@ -15,7 +15,12 @@
       <h2 class="project-tagline">A Logstash plugin to read the Linux Kernel /proc mount</h2>
       <a href="https://github.com/eperry/logstash-input-proc" class="btn">View on GitHub</a>
       <a href="https://github.com/eperry/logstash-input-proc/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/eperry/logstash-input-proc/tarball/master" class="btn">Download .tar.gz</a>
+      <a href="https://github.com/eperry/logstash-input-proc/tarball/master" class="btn">Download .tar.gz</a><br>
+      <a href="https://github.com/eperry/logstash-input-proc/quickstart.md" class="btn">Quickstart</a>
+      <a href="https://github.com/eperry/logstash-input-proc/documentation.md" class="btn">Documentation</a>
+      <a href="https://github.com/eperry/logstash-input-proc/development.md" class="btn">Documentation</a>
+      <a href="https://github.com/eperry/logstash-input-proc/Kibana/README.md" class="btn">Kibana</a>
+      <a href="https://github.com/eperry/logstash-input-proc/ElasticSearch/README.md" class="btn">Elasticsearch</a>
     </section>
 
     <section class="main-content">
@@ -28,152 +33,6 @@
 
 <p>This plugin is to read the /proc virtual file system , decode the files in it.
 I am using the following pages for reference </p>
-
-<ul>
-<li><a href="http://man7.org/linux/man-pages/man5/proc.5.html">http://man7.org/linux/man-pages/man5/proc.5.html</a></li>
-</ul>
-
-<h2>
-<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h2>
-
-<h3>
-<a id="1-plugin-developement-and-testing" class="anchor" href="#1-plugin-developement-and-testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Plugin Developement and Testing</h3>
-
-<h4>
-<a id="code" class="anchor" href="#code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code</h4>
-
-<ul>
-<li>
-<p>To get started, you'll need JRuby with the Bundler gem installed.</p>
-
-<div class="highlight highlight-sh"><pre>bundle install</pre></div>
-</li>
-<li><p>Then clone this repo</p></li>
-<li>You will need to either clone the logstash repo or download the binary</li>
-</ul>
-
-<h3>
-<a id="2-running-the-unpublished-plugin-in-logstash" class="anchor" href="#2-running-the-unpublished-plugin-in-logstash" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Running the unpublished Plugin in Logstash</h3>
-
-<h4>
-<a id="21-run-in-a-local-logstash-clone" class="anchor" href="#21-run-in-a-local-logstash-clone" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 Run in a local Logstash clone</h4>
-
-<ul>
-<li>Edit Logstash <code>Gemfile</code> and add the local plugin path, for example:</li>
-</ul>
-
-<div class="highlight highlight-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">"</span>logstash-input-proc<span class="pl-pds">"</span></span>, <span class="pl-c1">:path</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>/your/local/logstash-input-proc<span class="pl-pds">"</span></span></pre></div>
-
-<ul>
-<li>Install plugin</li>
-</ul>
-
-<div class="highlight highlight-sh"><pre>bin/plugin install --no-verify</pre></div>
-
-<ul>
-<li>install Ruby Debug</li>
-</ul>
-
-<div class="highlight highlight-sh"><pre>bin/plugin install logstash-codec-rubydebug</pre></div>
-
-<ul>
-<li>Run Logstash with your plugin</li>
-</ul>
-
-<div class="highlight highlight-sh"><pre>bin/logstash -e <span class="pl-s"><span class="pl-pds">'</span>input {proc {interval=&gt;60}}  output { stdout{ codec=&gt;"rubydebug"}}<span class="pl-pds">'</span></span></pre></div>
-
-<p>At this point any modifications to the plugin code will be applied to this local Logstash setup. After modifying the plugin, simply rerun Logstash.</p>
-
-<h4>
-<a id="22-run-in-an-installed-logstash" class="anchor" href="#22-run-in-an-installed-logstash" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.2 Run in an installed Logstash</h4>
-
-<p>You can use the same <strong>2.1</strong> method to run your plugin in an installed Logstash by editing its <code>Gemfile</code> and pointing the <code>:path</code> to your local plugin development directory or you can build the gem and install it using:</p>
-
-<ul>
-<li>Build your plugin gem</li>
-</ul>
-
-<div class="highlight highlight-sh"><pre>gem build logstash-output-proc.gemspec</pre></div>
-
-<ul>
-<li>Install the plugin from the Logstash home</li>
-</ul>
-
-<div class="highlight highlight-sh"><pre>bin/plugin install /your/local/plugin/logstash-input-proc.gem</pre></div>
-
-<h2>
-<a id="--start-logstash-and-proceed-to-test-the-plugin" class="anchor" href="#--start-logstash-and-proceed-to-test-the-plugin" aria-hidden="true"><span class="octicon octicon-link"></span></a>- Start Logstash and proceed to test the plugin</h2>
-
-<h1>
-<a id="example-config-all-features-enabled" class="anchor" href="#example-config-all-features-enabled" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example Config all features enabled</h1>
-
-<div class="highlight highlight-ruby"><pre>input {
-    proc {
-        interval=&gt;<span class="pl-c1">60</span>
-        vmstats =&gt;{ }
-        loadavg =&gt;{ }
-        meminfo =&gt;{ }
-        pidstats =&gt;{ 
-            user =&gt; <span class="pl-s"><span class="pl-pds">"</span>root<span class="pl-pds">"</span></span>
-        }
-
-    }
-}
-
-output { 
-    stdout{ 
-        codec=&gt;<span class="pl-s"><span class="pl-pds">"</span>rubydebug<span class="pl-pds">"</span></span>
-    }
-}</pre></div>
-
-<h1>
-<a id="example-minimal" class="anchor" href="#example-minimal" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example Minimal</h1>
-
-<div class="highlight highlight-ruby"><pre>input {
-    proc {
-        interval=&gt;<span class="pl-c1">60</span>
-        meminfo =&gt;{ }
-    }
-}
-
-output { 
-    stdout{ 
-        codec=&gt;<span class="pl-s"><span class="pl-pds">"</span>rubydebug<span class="pl-pds">"</span></span>
-    }
-}</pre></div>
-
-<h2>
-<a id="30-kibana-dashboards" class="anchor" href="#30-kibana-dashboards" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.0 Kibana Dashboards</h2>
-
-<p>Still a work in progress but I have saved a copy of the Kibana 4.1 dashboards I have created
-in the ~/Kibana Directory, you should be able to import them from the Kibana-&gt;settings-&gt;Objects pages</p>
-
-<p>These dashboards are right now a way of me validating the data loaded in elasticsearch is usable and provide an example for others to work off of. They work with the setup
-of elasticsearch as defined below.</p>
-
-<h2>
-<a id="40-elasticsearch-templates" class="anchor" href="#40-elasticsearch-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.0 Elasticsearch Templates</h2>
-
-<p>In the ~/ElasitcSearch Directory are all the Elasticsearch templates I am developing to work with this plugin. 
-While they may not be exactly what you need they are a good start. </p>
-
-<p>I load them via the ${ES_HOME/config/templates directory but feel free to load them in your preffered way </p>
-
-<p>These templates are based on the fact that your indexes for the data are created like so:</p>
-
-<pre><code>output { 
-    elasticsearch { 
-       host =&gt; localhost 
-       index =&gt; "%{type}-%{+YYYY.MM.dd}"
-    }
-}
-</code></pre>
-
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/eperry/logstash-input-proc">Logstash-input-proc</a> is maintained by <a href="https://github.com/eperry">eperry</a>.</span>
-
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
 
     </section>
 
