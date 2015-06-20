@@ -1,6 +1,7 @@
 ![](https://github.com/eperry/logstash-input-proc/wiki/MemInfoDashboard.png)
 
-# [Project Home page](http://eperry.github.io/logstash-input-proc/)
+# Logstash Input Proc Parser
+##[Home page](http://eperry.github.io/logstash-input-proc/)
 
 This is a plugin for with [Logstash](https://github.com/elasticsearch/logstash).
 
