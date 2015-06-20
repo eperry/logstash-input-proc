@@ -374,6 +374,7 @@ def readCpuInfo(queue)
               "type"          => "cpuinfo" )
         decorate(event)
         queue << event
+        cpuinfo = Hash.new
         next
       end
       m = line.strip.split(/\s+:\s+/)
@@ -398,7 +399,7 @@ def readCrypto(queue)
               "crypto"       => crypto,
               "file"          => file.to_s,
               "host"          => @host, 
-              "type"          => "cpuinfo" )
+              "type"          => "crypto" )
         decorate(event)
         queue << event
         next
@@ -514,7 +515,7 @@ end
       end
       rescue => exception
         #puts exception.message 
-        #puts exception.backtrace
+        puts exception.backtrace
         raise
       end # rescue
     end # loop
