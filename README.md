@@ -12,7 +12,7 @@ I am using the following pages for reference
 
 [Quickstart](https://github.com/eperry/logstash-input-proc/wiki/quickstart)
 
-[Development](https://github.com/eperry/logstash-input-proc/wiki/developement)
+[Development](https://github.com/eperry/logstash-input-proc/wiki/development)
 
 [kibana](https://github.com/eperry/logstash-input-proc/wiki/kibana)
 
