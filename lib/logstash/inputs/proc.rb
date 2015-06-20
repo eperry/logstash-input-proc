@@ -383,12 +383,52 @@ def readCpuInfo(queue)
           cpuinfo[m[0]] = m[1].strip.split(/\s+/)
           next
         end
+        if ( /(processor|cpu MHz|physical id|siblings|core id|cpu cores|apicid|initial apicid|cpuid level|bogomips|clflush size|cache size)/.match(m[0]) )
+          cpuinfo[m[0]] = m[1].to_i
+          next
+        end
+        if ( /(cpu MHz|bogomips)/.match(m[0]) )
+          cpuinfo[m[0]] = m[1].to_f
+          next
+        end
+        if ( /(cache size)/.match(m[0]) )
+          cpuinfo[m[0]] = m[1].split(/\s+/)[0].to_i
+          next
+        end
         cpuinfo[m[0]] = m[1]
       end
     }
 end
 def readCrypto(queue)
     #  face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+    #processor	: 0
+    #vendor_id	: GenuineIntel
+    #cpu family	: 6
+    #model		: 69
+    #model name	: Intel(R) Core(TM) i5-4210U CPU @ 1.70GHz
+    #stepping	: 1
+    #microcode	: 0x17
+    #cpu MHz		: 799.996
+    #cache size	: 3072 KB
+    #physical id	: 0
+    #siblings	: 4
+    #core id		: 0
+    #cpu cores	: 2
+    #apicid		: 0
+    #initial apicid	: 0
+    #fpu		: yes
+    #fpu_exception	: yes
+    #cpuid level	: 13
+    #wp		: yes
+    #flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmo
+    #n pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx est tm2 ssse3 fma cx16 xtpr pdcm pcid sse4_1 sse4_2 movbe popcnt tsc_deadline_timer 
+    #aes xsave avx f16c rdrand lahf_lm abm ida arat epb xsaveopt pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid
+    #bogomips	: 3391.99
+    #clflush size	: 64
+    #cache_alignment	: 64
+    #address sizes	: 39 bits physical, 48 bits virtual
+    #power management:
+
     crypto = Hash.new
 		file = Pathname.new("/proc/crypto")
     lines = file.readlines
