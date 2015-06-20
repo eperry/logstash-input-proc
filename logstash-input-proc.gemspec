@@ -1,12 +1,12 @@
 Gem::Specification.new do |s|
   s.name = 'logstash-input-proc'
-  s.version         = '0.1.2'
+  s.version         = '0.1.1'
   s.licenses = ['Apache License (2.0)']
   s.summary = "This plugin is for reading the /proc of a linux filesystem"
   s.description = "Plugin is used with logstash"
   s.authors = ["Edward Perry"]
   s.email = 'edwardperry1@gmail.com'
-  s.homepage = "http://www.edwardperry.com"
+  s.homepage = "http://eperry.github.io/logstash-input-proc/"
   s.require_paths = ["lib"]
 
   # Files

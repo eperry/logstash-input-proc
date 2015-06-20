@@ -216,7 +216,6 @@ def readPidStats(queue)
         process["processor"]   = stat[38].to_i
         process["rt_priority"] = stat[39].to_i
         process["policy"]      = stat[40].to_i
-
         # Get /proc/<pid>/status information (name, uid, euid, gid, egid)
         begin
           IO.foreach("/proc/#{file}/status") do |line|
@@ -234,7 +233,7 @@ def readPidStats(queue)
         rescue Errno::ESRCH, Errno::ENOENT
           next
         end
-
+        
         # If cmdline is empty use comm instead
         process["cmdline"] = process["comm"] if process["cmdline.empty?"]
 

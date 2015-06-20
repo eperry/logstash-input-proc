@@ -2,17 +2,58 @@
 
 # Logstash Plugin
 
-This is a plugin for [Logstash](https://github.com/elasticsearch/logstash).
+This is a plugin for with [Logstash](https://github.com/elasticsearch/logstash).
 
 This plugin is to read the /proc virtual file system , decode the files in it.
 I am using the following pages for reference 
 
 - http://man7.org/linux/man-pages/man5/proc.5.html
 
+## To install for use
+```
+${LS_HOME}/bin/plugin install logstash-input-proc
+```
+
+## Example Config all features enabled
+```ruby
+input {
+    proc {
+        interval=>60
+        vmstats =>{ }
+        loadavg =>{ }
+        meminfo =>{ }
+        pidstats =>{ 
+            user => "root"
+        }
+        
+    }
+}
+
+output { 
+    stdout{ 
+        codec=>"rubydebug"
+    }
+}
+```
+##Example Minimal
+
+```ruby
+input {
+    proc {
+        interval=>60
+        meminfo =>{ }
+    }
+}
+
+output { 
+    stdout{ 
+        codec=>"rubydebug"
+    }
+}
+```
 
 
-
-## Documentation
+## Development Documentation
 
 
 ### 1. Plugin Developement and Testing
@@ -64,43 +105,6 @@ bin/plugin install /your/local/plugin/logstash-input-proc.gem
 ```
 - Start Logstash and proceed to test the plugin
 - 
-# Example Config all features enabled
-```ruby
-input {
-    proc {
-        interval=>60
-        vmstats =>{ }
-        loadavg =>{ }
-        meminfo =>{ }
-        pidstats =>{ 
-            user => "root"
-        }
-        
-    }
-}
-
-output { 
-    stdout{ 
-        codec=>"rubydebug"
-    }
-}
-```
-#Example Minimal
-
-```ruby
-input {
-    proc {
-        interval=>60
-        meminfo =>{ }
-    }
-}
-
-output { 
-    stdout{ 
-        codec=>"rubydebug"
-    }
-}
-```
 
 ## 3.0 Kibana Dashboards
 
