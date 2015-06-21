@@ -13,7 +13,7 @@ class LogStash::Inputs::Proc < LogStash::Inputs::Base
   config_name "proc"
 
   # If undefined, Logstash will complain, even if codec is unused.
-  default :codec, "plain" 
+  default :codec, "json" 
 
   # The message string to use in the event.
   #config :message, :validate => :string, :default => "Hello World!"
@@ -106,7 +106,6 @@ def readPidStats(queue)
     fuid = Etc.getpwnam(@pidstats["user"]).uid
     @logger.info? && @logger.info("Filtering userid =" + @pidstats["user"] )
   end
-  process = Hash.new
   #Loosely based on the GEM ProcTable  which was  based on the Perl Module ProcTable
      Dir.foreach("/proc"){ |file|
         next if file =~ /\D/ # Skip non-numeric directories
@@ -114,24 +113,24 @@ def readPidStats(queue)
           fileUid = File.stat("/proc/"+file).uid
           next if fileUid != fuid
         end
-        
+        process = Hash.new
         # Get /proc/<pid>/cmdline information. Strip out embedded nulls.
         begin
           data = IO.read("/proc/#{file}/cmdline").tr("\000", ' ').strip
           process["cmdline"] = data 
         rescue
-          next # Process terminated, on to the next process
+          # Ignore and move on.
         end
-
         # Get /proc/<pid>/cwd information
-        process["cwd"] = File.readlink("/proc/#{file}/cwd") rescue nil
+        process["cwd"] = File.readlink("/proc/#{file}/cwd") rescue 
 
         # Get /proc/<pid>/environ information. Environment information
         # is represented as a Hash, with the environment variable as the
         # key and its value as the hash value.
-        process["environ"] = Hash.new
+
 
         begin
+          process["environ"] = Hash.new
           IO.read("/proc/#{file}/environ").split("\0").each{ |str|
             key, value = str.split('=')
             process["environ"][key] = value
@@ -141,7 +140,7 @@ def readPidStats(queue)
         end
 
         # Get /proc/<pid>/exe information
-        process["exe"] = File.readlink("/proc/#{file}/exe") rescue nil
+        process["exe"] = File.readlink("/proc/#{file}/exe") rescue 
 
         # Get /proc/<pid>/fd information. File descriptor information
         # is represented as a Hash, with the fd as the key, and its
@@ -150,23 +149,41 @@ def readPidStats(queue)
 
         begin
           Dir.foreach("/proc/#{file}/fd/") { |fd|
-            process["fd"][fd] = File.readlink("/proc/#{file}/fd/"+fd)  rescue nil
+            process["fd"][fd] = File.readlink("/proc/#{file}/fd/"+fd)  rescue process["fd"] = []
           }
-          rescue 
-          process["fd"] = ""
+        rescue 
           #  # Ignore and move on
         end
 
         # Get /proc/<pid>/root information
-        process["root"] = File.readlink("/proc/#{file}/root") rescue nil
-
-        # Get /proc/<pid>/stat information
-        stat = IO.read("/proc/#{file}/stat") rescue next
+        process["root"] = File.readlink("/proc/#{file}/root") rescue 
 
         # Get number of LWP, one directory for each in /proc/<pid>/task/
         # Every process has at least one thread, so if we fail to read the task directory, set nlwp to 1.
-        process["nlwp"] = Dir.glob("/proc/#{file}/task/*").length rescue process["nlwp"] = 1
+        process["nlwp"] = Dir.glob("/proc/#{file}/task/*").length rescue process["nlwp"] = 1 
+        
+        # cat /proc/3828/io
+        #          rchar: 323934931
+        #          wchar: 323929600
+        #          syscr: 632687
+        #          syscw: 632675
+        #          read_bytes: 0
+        #          write_bytes: 323932160
+        #          cancelled_write_bytes: 0
+        begin
+          process["io"] = Hash.new
 
+          IO.foreach("/proc/#{file}/io") do |line|
+              key, value = line.split(/[:\s]+/)
+              process["io"][key] = value.to_i
+          end
+          rescue 
+          # Ignore and move on.
+        end
+
+        # Get /proc/<pid>/stat information
+      begin
+        stat = IO.read("/proc/#{file}/stat") 
         # Deal with spaces in comm name. Courtesy of Ara Howard.
         re = %r/\([^\)]+\)/
         comm = stat[re]
@@ -174,7 +191,6 @@ def readPidStats(queue)
         stat[re] = comm
 
         stat = stat.split
-
         process["pid"]         = stat[0].to_i
         process["comm"]        = stat[1].tr('()','') # Remove parens
         process["state"]       = stat[2]
@@ -199,7 +215,7 @@ def readPidStats(queue)
         process["starttime"]   = stat[21].to_i
         process["vsize"]       = stat[22].to_i
         process["rss"]         = stat[23].to_i
-        process["rlim"]        = stat[24].to_i
+        process["rlim"]        = stat[24].to_s
         process["startcode"]   = stat[25].to_i
         process["endcode"]     = stat[26].to_i
         process["startstack"]  = stat[27].to_i
@@ -209,13 +225,16 @@ def readPidStats(queue)
         process["blocked"]     = stat[31].to_i
         process["sigignore"]   = stat[32].to_i
         process["sigcatch"]    = stat[33].to_i
-        process["wchan"]       = stat[34].to_i
+        process["wchan"]       = stat[34].to_s
         process["nswap"]       = stat[35].to_i
         process["cnswap"]      = stat[36].to_i
         process["exit_signal"] = stat[37].to_i
         process["processor"]   = stat[38].to_i
         process["rt_priority"] = stat[39].to_i
         process["policy"]      = stat[40].to_i
+      rescue
+        
+      end
         # Get /proc/<pid>/status information (name, uid, euid, gid, egid)
         begin
           IO.foreach("/proc/#{file}/status") do |line|
@@ -231,17 +250,13 @@ def readPidStats(queue)
             end
           end
         rescue Errno::ESRCH, Errno::ENOENT
-          next
         end
         
         # If cmdline is empty use comm instead
         process["cmdline"] = process["comm"] if process["cmdline.empty?"]
-
-        
         event = LogStash::Event.new( "file" => "/proc" ,"host" => @host, "type" => "pidstats" , "process" => process);
         decorate(event)
         queue << event
-
       }
 
 
@@ -462,7 +477,6 @@ def readWireless(queue)
     lines.each { |line|
       #@logger.info? && @logger.info("LINE: "+line)
       m = line.strip.split(/[:\s]+/)
-      #puts(m)
       if (m && m.length >= 11 )
       event = LogStash::Event.new(
               "raw"           => line, 
@@ -553,7 +567,7 @@ end
         sleep(sleeptime)
       end
       rescue => exception
-        #puts exception.message 
+        puts exception.message 
         puts exception.backtrace
         raise
       end # rescue
