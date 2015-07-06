@@ -66,7 +66,7 @@
       "title": "CPU Dashboard",
       "hits": 0,
       "description": "",
-      "panelsJSON": "[{\"col\":8,\"id\":\"Load-Average\",\"row\":1,\"size_x\":5,\"size_y\":2,\"type\":\"visualization\"},{\"id\":\"PIDStats-TOP-10-CPU-User-(utime-slash-jiffies)\",\"type\":\"visualization\",\"size_x\":7,\"size_y\":8,\"col\":1,\"row\":1},{\"id\":\"PIDSTATS-Top-10-STDDIVATION-STIME\",\"type\":\"visualization\",\"size_x\":5,\"size_y\":3,\"col\":8,\"row\":3},{\"id\":\"PIDSTATS-Top-10-STDDIVATION-UTIME\",\"type\":\"visualization\",\"size_x\":5,\"size_y\":3,\"col\":8,\"row\":6}]",
+      "panelsJSON": "[{\"col\":8,\"id\":\"Load-Average\",\"row\":1,\"size_x\":5,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"PIDStats-TOP-10-CPU-User-(utime-slash-jiffies)\",\"row\":1,\"size_x\":7,\"size_y\":8,\"type\":\"visualization\"},{\"col\":8,\"id\":\"PIDSTATS-Top-10-STDDIVATION-STIME\",\"row\":3,\"size_x\":5,\"size_y\":3,\"type\":\"visualization\"},{\"col\":8,\"id\":\"PIDSTATS-Top-10-STDDIVATION-UTIME\",\"row\":6,\"size_x\":5,\"size_y\":3,\"type\":\"visualization\"},{\"id\":\"CPUINFO-Summary-CPU-Info\",\"type\":\"visualization\",\"size_x\":12,\"size_y\":2,\"col\":1,\"row\":9}]",
       "version": 1,
       "timeRestore": false,
       "kibanaSavedObjectMeta": {
@@ -520,6 +520,19 @@
       "version": 1,
       "kibanaSavedObjectMeta": {
         "searchSourceJSON": "{\"index\":\"[proc-pidstats-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "CPUINFO-Summary-CPU-Info",
+    "_type": "visualization",
+    "_source": {
+      "title": "CPUINFO - Summary CPU Info",
+      "visState": "{\"aggs\":[{\"id\":\"1\",\"params\":{\"field\":\"cpuinfo.cache size\"},\"schema\":\"metric\",\"type\":\"max\"},{\"id\":\"2\",\"params\":{\"field\":\"host\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":0},\"schema\":\"bucket\",\"type\":\"terms\"},{\"id\":\"3\",\"params\":{\"field\":\"cpuinfo.model name\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":5},\"schema\":\"bucket\",\"type\":\"terms\"},{\"id\":\"4\",\"params\":{\"field\":\"cpuinfo.cpu MHz\"},\"schema\":\"metric\",\"type\":\"max\"},{\"id\":\"5\",\"params\":{\"field\":\"cpuinfo.cpu cores\"},\"schema\":\"metric\",\"type\":\"max\"},{\"id\":\"6\",\"params\":{\"field\":\"cpuinfo.physical id\"},\"schema\":\"metric\",\"type\":\"cardinality\"},{\"id\":\"7\",\"params\":{\"field\":\"cpuinfo.vendor_id\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":5},\"schema\":\"bucket\",\"type\":\"terms\"}],\"listeners\":{},\"params\":{\"perPage\":10,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false},\"type\":\"table\"}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[proc-cpuinfo-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
       }
     }
   }
