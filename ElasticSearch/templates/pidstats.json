@@ -38,7 +38,9 @@
                             "type": "long"
                         },
                         "state": {
-                            "type": "string"
+                            "type": "string",
+"index" : "not_analyzed"
+
                         },
                         "sigcatch": {
                             "type": "long"
@@ -74,7 +76,9 @@
                             "type": "long"
                         },
                         "name": {
-                            "type": "string"
+                            "type": "string",
+"index" : "not_analyzed"
+
                         },
                         "rss": {
                             "type": "long"
@@ -89,7 +93,9 @@
                             "type": "long"
                         },
                         "rlim": {
-                            "type": "string"
+                            "type": "string",
+"index" : "not_analyzed"
+
                         },
                         "tpgid": {
                             "type": "long"
@@ -98,7 +104,9 @@
                             "type": "long"
                         },
                         "comm": {
-                            "type": "string"
+                            "type": "string",
+"index" : "not_analyzed"
+
                         },
                         "starttime": {
                             "type": "long"
@@ -110,7 +118,9 @@
                             "type": "long"
                         },
                         "cmdline": {
-                            "type": "string"
+                            "type": "string",
+"index" : "not_analyzed"
+
                         },
                         "environ": {
                             "type": "object"
@@ -140,7 +150,9 @@
                             "type": "long"
                         },
                         "wchan": {
-                            "type": "string"
+                            "type": "string",
+"index" : "not_analyzed"
+
                         },
                         "session": {
                             "type": "long"
@@ -170,16 +182,24 @@
                     "type": "date"
                 },
                 "host": {
-                    "type": "string"
+                    "type": "string",
+"index" : "not_analyzed"
+
                 },
                 "file": {
-                    "type": "string"
+                    "type": "string",
+"index" : "not_analyzed"
+
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+"index" : "not_analyzed"
+
                 },
                 "@version": {
-                    "type": "string"
+                    "type": "string",
+"index" : "not_analyzed"
+
                 }
             }
 }

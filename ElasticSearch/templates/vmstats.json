@@ -16,10 +16,14 @@
                     "type": "date"
                 },
                 "host": {
-                    "type": "string"
+                    "type": "string",
+"index" : "not_analyzed"
+
                 },
                 "file": {
-                    "type": "string"
+                    "type": "string",
+"index" : "not_analyzed"
+
                 },
                 "vmstats": {
                     "properties": {
@@ -380,7 +384,9 @@
                     }
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+"index" : "not_analyzed"
+
                 },
                 "@version": {
                     "type": "long"

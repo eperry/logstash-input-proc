@@ -9,7 +9,9 @@
         "meminfo": {
             "properties": {
                 "raw": {
-                    "type": "string"
+                    "type": "string",
+"index" : "not_analyzed"
+
                 },
                 "VmallocUsed": {
                     "type": "long"
@@ -72,7 +74,9 @@
                     "type": "long"
                 },
                 "file": {
-                    "type": "string"
+                    "type": "string",
+"index" : "not_analyzed"
+
                 },
                 "Buffers": {
                     "type": "long"
@@ -99,7 +103,9 @@
                     "type": "long"
                 },
                 "host": {
-                    "type": "string"
+                    "type": "string",
+"index" : "not_analyzed"
+
                 },
                 "SwapTotal": {
                     "type": "long"

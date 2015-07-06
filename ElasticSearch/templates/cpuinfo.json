@@ -1,0 +1,85 @@
+{
+    "template": "cpuinfo*",
+    "order": 10,
+    "aliases": {
+        "cpuinfo": [{
+            "add": {
+                "index": "cpuinfo"
+            }
+        }]
+    },
+    "mappings": {
+        "_default_": {
+            "_all": {
+                "enabled": true
+            },
+            "dynamic_templates": [{
+                "string_fields": {
+                    "match": "*",
+                    "match_mapping_type": "string",
+                    "mapping": {
+                        "type": "string",
+                        "index": "not_analyzed",
+                        "omit_norms": true
+                    }
+                }
+            }],
+            "cpuinfo": {
+                "properties": {
+                    "@timestamp": {
+                        "format": "dateOptionalTime",
+                        "type": "date"
+                    },
+                    "host": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "file": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    },
+                    "cpuinfo": {
+                        "properties": {
+                            "bogomips": {
+                                "type": "long"
+                            },
+                            "core id": {
+                                "type": "long"
+                            },
+                            "siblings": {
+                                "type": "long"
+                            },
+                            "initial apicid": {
+                                "type": "long"
+                            },
+                            "cpu cores": {
+                                "type": "long"
+                            },
+                            "cpu MHz": {
+                                "type": "long"
+                            },
+                            "physical id": {
+                                "type": "long"
+                            },
+                            "apicid": {
+                                "type": "long"
+                            },
+                            "cache size": {
+                                "type": "long"
+                            },
+                            "cpuid level": {
+                                "type": "long"
+                            },
+                            "clflush size": {
+                                "type": "long"
+                            },
+                            "processor": {
+                                "type": "long"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
