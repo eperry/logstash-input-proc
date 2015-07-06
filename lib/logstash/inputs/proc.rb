@@ -122,7 +122,7 @@ def readPidStats(queue)
           # Ignore and move on.
         end
         # Get /proc/<pid>/cwd information
-        process["cwd"] = File.readlink("/proc/#{file}/cwd") rescue 
+        process["cwd"] = File.readlink("/proc/#{file}/cwd") rescue process["cwd"] =""
 
         # Get /proc/<pid>/environ information. Environment information
         # is represented as a Hash, with the environment variable as the
@@ -140,7 +140,7 @@ def readPidStats(queue)
         end
 
         # Get /proc/<pid>/exe information
-        process["exe"] = File.readlink("/proc/#{file}/exe") rescue 
+        process["exe"] = File.readlink("/proc/#{file}/exe") rescue  process["exe"] =""
 
         # Get /proc/<pid>/fd information. File descriptor information
         # is represented as a Hash, with the fd as the key, and its
