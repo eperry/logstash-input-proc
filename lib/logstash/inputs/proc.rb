@@ -156,7 +156,7 @@ def readPidStats(queue)
         end
 
         # Get /proc/<pid>/root information
-        process["root"] = File.readlink("/proc/#{file}/root") rescue 
+        process["root"] = File.readlink("/proc/#{file}/root") rescue process["root"]="" 
 
         # Get number of LWP, one directory for each in /proc/<pid>/task/
         # Every process has at least one thread, so if we fail to read the task directory, set nlwp to 1.
