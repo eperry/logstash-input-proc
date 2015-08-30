@@ -542,34 +542,35 @@ end
   def run(queue)
     loop do
       begin
-      start = Time.now
-      readVmStats(queue)     if @vmstats
-      readLoadAverage(queue) if @loadavg
-      readMemInfo(queue)     if @meminfo
-      readPidStats(queue)    if @pidstats
-      readDiskStats(queue)   if @diskstats
-      readMounts(queue)      if @mounts
-      readNetDev(queue)      if @netdev
-      readCpuInfo(queue)     if @cpuinfo
-      readCrypto(queue)      if @crypto
-      readWireless(queue)    if @wireless
-      readSysIpcShm(queue)   if @sysipcshm
-      duration = Time.now - start
-      @logger.info("Parsing completed", :duration => duration, :interval => @interval )
-      # Sleep for the remainder of the interval, or 0 if the duration ran
-      # longer than the interval.
-      sleeptime = [0, @interval - duration].max
-      if sleeptime == 0
-        @logger.warn("Parsing longer than the interval. Skipping sleep.",
-                     :duration => duration,
-                     :interval => @interval)
-      else
-        sleep(sleeptime)
-      end
+        start = Time.now
+        readVmStats(queue)     if @vmstats
+        readLoadAverage(queue) if @loadavg
+        readMemInfo(queue)     if @meminfo
+        readPidStats(queue)    if @pidstats
+        readDiskStats(queue)   if @diskstats
+        readMounts(queue)      if @mounts
+        readNetDev(queue)      if @netdev
+        readCpuInfo(queue)     if @cpuinfo
+        readCrypto(queue)      if @crypto
+        readWireless(queue)    if @wireless
+        readSysIpcShm(queue)   if @sysipcshm
+        duration = Time.now - start
+        @logger.info("Parsing completed", :duration => duration, :interval => @interval )
+        # Sleep for the remainder of the interval, or 0 if the duration ran
+        # longer than the interval.
+        sleeptime = [0, @interval - duration].max
+        if sleeptime == 0
+          @logger.warn("Parsing longer than the interval. Skipping sleep.",
+                       :duration => duration,
+                       :interval => @interval)
+        else
+          sleep(sleeptime)
+        end
       rescue => exception
-        puts exception.message 
-        puts exception.backtrace
-        raise
+        # Do Do nothing
+#        puts exception.message 
+#        puts exception.backtrace
+#        raise
       end # rescue
     end # loop
   end # def run
