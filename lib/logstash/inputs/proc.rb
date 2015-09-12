@@ -133,7 +133,12 @@ def readPidStats(queue)
           process["environ"] = Hash.new
           IO.read("/proc/#{file}/environ").split("\0").each{ |str|
             key, value = str.split('=')
-            process["environ"][key] = value
+            if (  ! key.nil? || ! key.empty?)
+              if ( value.nil? )
+                value =""
+              end
+              process["environ"][key] = value
+            end
           }
         rescue Errno::EACCES, Errno::ESRCH, Errno::ENOENT
           # Ignore and move on.
